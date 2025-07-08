@@ -53,7 +53,7 @@ const AuthForm =<T extends object>({title , description , inputs , btn , footer 
                                     <label className="block m-0.5 text-start whitespace-nowrap" htmlFor={"input"+index}>{input.type != "file" ? input.label : <img src ={input.label} className="w-25" alt ="" />}</label>
                                     <input type={input.type} 
                                         name={input.name} 
-                                        className= {`block w-full h-[40px] mb-[8px] rounded-lg ps-[15px] bg-gray-200 border border-gray-300 focus:border-sky-950 outline-[0] ${input.type == "file" }`} 
+                                        className= {`block w-full h-[40px] mb-[8px] rounded-lg ps-[15px] bg-gray-200 border border-gray-300 focus:border-sky-950 outline-[0] ${input.type == "file" &&"hidden" }`} 
                                         placeholder={input.placeholder} 
                                         id={"input"+index}
                                         onChange={dataHandiling}

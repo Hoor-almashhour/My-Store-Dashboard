@@ -16,12 +16,10 @@ import { useNavigate } from "react-router-dom";
     const navigate = useNavigate();
 
     const sendData = async () => {
-        if (!data.email || !data.password) {
-        showErrorToast("Please fill in both email and password");
-        return;
-        }
 
         try {
+
+        console.log("Sending Data:", data);
         const response = await fetch("https://vica.website/api/login", {
             method: "POST",
             headers: {
@@ -34,22 +32,16 @@ import { useNavigate } from "react-router-dom";
         const result = await response.json();
         console.log(result);
 
-        if (!response.ok) {
-            showErrorToast(result.message || "Login failed. Check your credentials.");
-            return;
-        }
-
         if (result.token && result.user) {
             localStorage.setItem("token", result.token);
             localStorage.setItem("userInfo", JSON.stringify(result.user));
+        }
             showSuccessToast("You have been logged in successfully");
             navigate("/dashboard");
-        } else {
-            showErrorToast("Invalid response from server");
         }
-        } catch (err) {
-        console.error(err);
-        showErrorToast("Something went wrong. Please try again.");
+        catch (err) {
+            console.error(err);
+            showErrorToast("Something went wrong. Please try again.");
         }
     };
 

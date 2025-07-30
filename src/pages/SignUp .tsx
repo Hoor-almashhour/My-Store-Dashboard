@@ -53,18 +53,17 @@ const SignUp  = () => {
                 const res = await response.json();
                 console.log(res);
 
-                if (!response.ok) {
+               /*f (!response.ok) {
                     const errorMessage = res.message || "Registration failed";
                     showErrorToast(errorMessage);
                     return;
-                }
+                }*/
 
                 if (res.token && res.user) {
                     localStorage.setItem("token", res.token);
                     localStorage.setItem("userInfo", JSON.stringify(res.user));
-                    showSuccessToast(" created your account successfully")
-                
                 } 
+                    showSuccessToast(" created your account successfully")
                         navigate("/dashboard");
                 }
                 catch (err) {

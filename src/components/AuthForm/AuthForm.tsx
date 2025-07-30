@@ -16,10 +16,12 @@ interface Props <T>{
     btn : string,
     footer : {description : string , link : {url : string , content : string}},
     setData : Dispatch<SetStateAction<T>> 
+    data : T,
+    onSubmit: () => void;
 }
 
-const AuthForm =<T extends object>({title , description , inputs , btn , footer , setData }: Props<T>) => {
-    let data : T;
+const AuthForm =<T extends object>({title , description , inputs , btn , footer , setData ,data: initialData,  onSubmit }: Props<T>) => {
+    let data = { ...initialData };
     console.log("hello from child")
     const dataHandiling =(event : ChangeEvent<HTMLInputElement>) =>{
         const {name , value ,files, type}  = event.target
@@ -29,6 +31,7 @@ const AuthForm =<T extends object>({title , description , inputs , btn , footer 
     const sendData =(event : FormEvent) => {
         event.preventDefault();
         setData(data)
+        onSubmit()
         console.log(data)
     }
 
@@ -50,12 +53,12 @@ const AuthForm =<T extends object>({title , description , inputs , btn , footer 
                             className={` ${groupInputs.length === 3 ? "grid grid-cols-3 gap-3"  : groupInputs.length === 2 ? "grid grid-cols-2 gap-3": ""}`}>
                             {groupInputs.map((input, index) => (
                                 <div key={index} className="flex-1 ">
-                                    <label className="block m-0.5 text-start whitespace-nowrap" htmlFor={"input"+index}>{input.type != "file" ? input.label : <img src ={input.label} className="w-25" alt ="" />}</label>
+                                    <label className="block m-0.5 text-start whitespace-nowrap" htmlFor={input.name}>{input.type != "file" ? input.label : <img src ={input.label} className="w-25 " alt ="" />}</label>
                                     <input type={input.type} 
                                         name={input.name} 
                                         className= {`block w-full h-[40px] mb-[8px] rounded-lg ps-[15px] bg-gray-200 border border-gray-300 focus:border-sky-950 outline-[0] ${input.type == "file" &&"hidden" }`} 
                                         placeholder={input.placeholder} 
-                                        id={"input"+index}
+                                        id={input.name}
                                         onChange={dataHandiling}
                                     />
                                 </div>

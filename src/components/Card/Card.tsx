@@ -36,7 +36,7 @@ const Card = ({id , image_url , name , price , setItemDeleted} : CardProps) => {
         showSuccessToast("Product deleted successfully")
     }
     return (
-        <div className="w-[250px] h-[290px] rounded-lg dark:bg-dark p-4 dark:text-white bg-white shadow-xl"
+        <div className="w-[250px] h-[100%] rounded-lg dark:bg-dark p-4 dark:text-white bg-white shadow-xl"
             key={id}
             >
             <img className="max-w-[75%] mx-auto mb-2 dark:bg-dark bg-none" src={image_url} alt="" />

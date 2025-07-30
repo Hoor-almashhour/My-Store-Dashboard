@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AuthForm from "../components/AuthForm/AuthForm"
-import { showSuccessToast } from "../components/ToastUtils/ToastUtils";
+import { showErrorToast, showSuccessToast } from "../components/ToastUtils/ToastUtils";
+import { useNavigate } from "react-router-dom";
 
 
 interface SignUpData {
@@ -16,48 +17,65 @@ interface SignUpData {
 
 const SignUp  = () => {
     const [data , setData] = useState<SignUpData>({
-            first_name :"",
+            first_name : "",
             last_name: "",
             user_name : "",
             email : "",
             password : "",
             password_confirmation : "",
             profile_image : null
+            
         }) 
+        
+    const navigate = useNavigate()
 
-        useEffect(()=>{
-            let formData = new FormData()
+    const handleSubmit = async () => {
+
+            const formData = new FormData()
             formData.append("first_name" , data.first_name)
             formData.append("last_name" , data.last_name)
             formData.append("user_name" , data.user_name)
             formData.append("email", data.email)
             formData.append("password", data.password)
             formData.append("password_confirmation", data.password_confirmation)
-            if (data.profile_image){
-                formData.append("profile_image", data.profile_image ?? "")
+            if (data.profile_image) {
+                formData.append("profile_image", data.profile_image);
             }
-            fetch("https://vica.website/api/register" , {
-                method : "POST" ,
-                headers : {
-                    "Accept" : "application/json" ,
-                },
-                body : formData
-            })
-            .then(res => res.json())
-            .then(res => {
-                console.log(res)
-                if (res.data?.token) {
-                    localStorage.setItem("token" , res.data.token)
-                    localStorage.setItem("userInfo", JSON.stringify(res.data.user))
-                    showSuccessToast(" created your account successfully")
-                    showSuccessToast("Hi, Hoor almashhour 👋🌸");
+        try {
+                const response = await fetch("https://vica.website/api/register", {
+                    method: "POST",
+                    headers: {
+                    Accept: "application/json"
+                    },
+                    body: formData
+                });
+
+                const res = await response.json();
+                console.log(res);
+
+                if (!response.ok) {
+                    const errorMessage = res.message || "Registration failed";
+                    showErrorToast(errorMessage);
+                    return;
                 }
-            })
-            .catch(err => console.log(err))
-        }, [data])
+
+                if (res.token && res.user) {
+                    localStorage.setItem("token", res.token);
+                    localStorage.setItem("userInfo", JSON.stringify(res.user));
+                    showSuccessToast(" created your account successfully")
+                
+                } 
+                        navigate("/dashboard");
+                }
+                catch (err) {
+                    console.error(err);
+                    showErrorToast("Registration failed !,error")
+                }
+            };
 
     const inputs  = [
         {
+            id: "first_name",
             label : "First Name:" ,
             placeholder: "First Name",
             type : "text",
@@ -65,6 +83,7 @@ const SignUp  = () => {
             group : "name"
         },
         {
+            id: "last_name",
             label : "Last Name:" ,
             placeholder: "Last Name",
             type : "text",
@@ -72,6 +91,7 @@ const SignUp  = () => {
             group : "name"
         },
         {
+            id: "user_name",
             label : "User Name:" ,
             placeholder: "User Name",
             type : "text",
@@ -79,24 +99,31 @@ const SignUp  = () => {
             group : "name"
         },
         {
+            id: "email",
             label : "Email address:" ,
             placeholder: "example@gmail.com",
             type : "email",
             name : "email",
         },
-        {   label : "Password:" ,
+        { 
+            id: "password",
+            label : "Password:" ,
             placeholder: "******",
             type : "password",
             name : "password",
             group : "passwords"
         },
-        {   label : "Confirmation Password:" ,
+        {  
+            id: "password_confirmation",
+            label : "Confirmation Password:" ,
             placeholder: "******",
             type : "password",
             name : "password_confirmation",
             group : "passwords"
         },
-        {   label : "/assets/Img/profile_avatar.png" ,
+        {  
+            id: "profile_image",
+            label : "/assets/Img/profile_avatar.png" ,
             type : "file",
             name : "profile_image",
         }
@@ -105,13 +132,15 @@ const SignUp  = () => {
         <>
             <div className=" max-w-[100%] flex justify-center items-center  rounded-4xl ">
                 <AuthForm<SignUpData> 
-                title="Create an Account"
-                description="Create a account to continue"
-                inputs= {inputs} btn="Sign Up" 
-                footer={{ 
+                    title="Create an Account"
+                    description="Create a account to continue"
+                    inputs= {inputs} btn="Sign Up" 
+                    footer={{ 
                     description : "Already have an account?" , 
                     link : {content : "Login" , url : "/"} }} 
                     setData = {setData} 
+                    data={data}
+                    onSubmit={handleSubmit}
                 />
             </div>
         </>

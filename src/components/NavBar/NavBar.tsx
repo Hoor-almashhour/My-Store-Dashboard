@@ -1,5 +1,4 @@
-import type React from "react"
-import { useState } from "react";
+import type React from "react";
 import { IoIosSearch } from "react-icons/io";
 import { IoSunnySharp } from "react-icons/io5";
 import { IoMoon } from "react-icons/io5";
@@ -15,10 +14,19 @@ interface Props {
 
 const NavBar = ({setSearch , setMode  , mode} : Props) => {
 
-      const [userInfo] = useState(() => {
-      const stored = localStorage.getItem("userInfo");
-      return stored ? JSON.parse(stored) : null;
-    });
+      const rawUserInfo = localStorage.getItem("userInfo");
+
+      let userInfo = null;
+
+      try {
+        if (rawUserInfo) {
+          userInfo = JSON.parse(rawUserInfo);
+        }
+      } catch (error) {
+        console.error("Failed to parse userInfo from localStorage", error);
+        userInfo = null;
+      }
+
   return (
     <nav className="flex items-center justify-between  w-full dark:bg-dark">
         <div className="relative w-lg ml-4">
@@ -34,8 +42,8 @@ const NavBar = ({setSearch , setMode  , mode} : Props) => {
       </div>
       <div className="flex items-center gap-8">
           <div>
-            <p className="font-semibold  text-black  dark:text-white">{userInfo.first_name} {userInfo.last_name}</p>
-            <p className="text-xs text-gray-600  dark:text-white">{userInfo.user_name}</p>
+            <p className="font-semibold  text-black  dark:text-white">{userInfo?.first_name} {userInfo?.last_name}</p>
+            <p className="text-xs text-gray-600  dark:text-white">{userInfo?.user_name}</p>
           </div>
           <span className="dark:text-white">|</span>
           <button onClick={()=>setMode(prev => !prev)  }

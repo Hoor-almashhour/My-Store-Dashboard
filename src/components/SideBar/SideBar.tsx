@@ -44,7 +44,7 @@ const SideBar = ({logo , items} : Props) => {
     }
   return (
     <div className="w-[220px] py-6 text-center flex flex-col gap-9 min-h-screen dark:bg-dark ">
-      <h1 >{logo}</h1>
+      <div className="logo">{logo}</div>
       <div className="items flex flex-col gap justify-between grow items-center pr-7">
         <ul className="grow flex flex-col gap-8 ">
           {
